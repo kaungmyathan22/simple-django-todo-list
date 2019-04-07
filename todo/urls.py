@@ -4,12 +4,12 @@ from . import views
 app_name="todo"
 
 urlpatterns = [
-
-	path('',views.TodoListView.as_view(), name="index_view"),
+	path('list/',views.TodoListView.as_view(), name="index_view"),
+	path('api/',views.TodoAPIView.as_view(), name="api_view"),
 	path('detail/<int:pk>/',views.TodoDetailView.as_view(), name="detail_view"),
-	path('done/<int:pk>/',views.update_item_done, name="done_view"),
-	path('update/<int:pk>/',views.todo_update_view_page, name="update_view"),
-	path('delete/<int:pk>/',views.todo_delete_view_page, name="delete_view"),
-	path('create/',views.todo_create_view_page, name="create_view"),
+	path('done/<int:pk>/',views.TodoItemDoneView.as_view(), name="done_view"),
+	path('update/<int:pk>/',views.TodoUpdateView.as_view(), name="update_view"),
+	path('delete/<int:pk>/',views.TodoDeleteView.as_view(), name="delete_view"),
+	path('create/',views.TodoCreateView.as_view(), name="create_view"),
 
 ]

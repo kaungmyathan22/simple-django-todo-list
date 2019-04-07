@@ -1,105 +1,38 @@
 from .models import Todo
 from datetime import datetime
 from .forms import TodoCreateForm
-from django.urls import reverse_lazy
 from django.contrib import messages
-from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.http import JsonResponse
 from django.views.generic import (
+	View,
 	ListView,
 	DetailView,
 	CreateView,
 	UpdateView,
 	DeleteView
 	)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 
-def update_item_done(request,pk):
+class TodoItemDoneView(View):
 
-	object_ = get_object_or_404(Todo,pk=pk)
+	def get(self,request,pk):
 
-	object_.done = True
+		object_ = get_object_or_404(Todo,pk=pk)
 
-	object_.save()
+		object_.done = True
 
-	return redirect("todo:index_view")
+		object_.save()
 
-def index_page_view(request):
+		return redirect("todo:index_view")
 
-	context = {
+class TodoDeleteView(DeleteView):
 
-		"object_list" : Todo.objects.all(),
+	model = Todo
 
-		"today": datetime.now(),
-
-	}
-
-	return render(request,"todo/todo_list.html",context)
-
-def todo_detail_view_page(request,pk):
-
-	object_ = get_object_or_404(Todo,pk=pk)
-
-	context = {
-		"object" : object_,
-	}
-
-	return render(request,"todo/todo_detail.html",context)
-
-def todo_create_view_page(request):
-
-	form = TodoCreateForm(request.POST or None)
-
-	if request.method == "POST":
-
-		if form.is_valid():
-
-			created_todo_item = form.save()
-
-			messages.success(request,f"{created_todo_item} have been added successfully to your todo list .")
-
-			return redirect("todo:index_view")
-
-	context = {
-
-		"form": form,
-
-	}
-
-	return render(request,"todo/todo_form.html",context)
-
-def todo_update_view_page(request,pk):
-
-	instance = get_object_or_404(Todo, pk=pk)
-
-	form = TodoCreateForm(request.POST or None,instance=instance)
-
-	if request.method == "POST":
-
-		if form.is_valid():
-
-			created_todo_item = form.save()
-
-			messages.success(request,f"{created_todo_item} have been updated successfully to your todo list .")
-
-			return redirect("todo:detail_view",pk=created_todo_item.pk)
-
-	context = {
-
-		"form": form,
-
-	}
-
-	return render(request,"todo/todo_form.html",context)
-
-def todo_delete_view_page(request,pk):
-
-	instance = get_object_or_404(Todo, pk=pk)
-
-	instance.delete()
-
-	print("Hello")
-
-	return redirect("todo:index_view")
+	success_url = reverse_lazy("todo:index_view")
 
 class TodoListView(ListView):
 
@@ -117,8 +50,35 @@ class TodoDetailView(DetailView):
 
 	model = Todo
 
-class TodoUpdateView(UpdateView):
+class TodoCreateView(SuccessMessageMixin, CreateView):
 
 	model = Todo
 
-	success_url = reverse_lazy("todo:detail_view")
+	form_class = TodoCreateForm
+
+	success_message = "Todo Item have been created successfully"
+
+	def get_success_url(self):
+
+		return reverse_lazy("todo:detail_view",kwargs={"pk":self.object.pk})
+
+class TodoUpdateView(SuccessMessageMixin, UpdateView):
+
+	model = Todo
+
+	form_class = TodoCreateForm
+
+	success_message = "Todo Item have been updated successfully"
+
+	def get_success_url(self):
+
+			return reverse_lazy("todo:detail_view",kwargs={"pk":self.object.pk})
+	
+
+class TodoAPIView(View):
+
+	def get(self, request, *args, **kwargs):
+
+		objects = Todo.objects.all().values("pk","title","description")
+
+		return JsonResponse({"todo":list(objects)})
