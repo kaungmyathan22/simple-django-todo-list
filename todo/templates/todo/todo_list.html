@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block body %}
+<div class="container pt-4">
+
+	{% for message in messages %}
+	  
+	  <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+	
+	    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	
+	      <span aria-hidden="true">&times;</span>
+	
+	    </button>
+	
+	    {{ message }}
+	
+	  </div>
+	
+	{% endfor %}
+
+
+	
+	<a href="{% url "todo:create_view" %}">
+
+		<button class="btn btn-primary">Create Todo Item</button><br>
+
+	</a>
+
+	<div>
+		Today is {{ today }}
+	</div>
+
+	<table class="table table-dark my-5 table-striped table-hover">
+            <thead class="thead-inverse">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                    <th>Done</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for item in object_list %}
+
+                <tr>
+                    <th scope="row"> {{forloop.counter}} </th>
+                    <td>
+
+                    	{% if item.done %}
+
+                    		<del>{{ item.title }}</del>
+
+                    	{% else %}
+
+                    		{{ item.title }}
+
+                    	{% endif %}
+
+                    </td>
+                    <td>
+
+                    	{% if item.done %}
+
+                    		<del>{{ item.description|truncatewords:"8" }}</del>
+
+                    	{% else %}
+
+                    		{{ item.description|truncatewords:"8" }}
+
+                    	{% endif %}
+
+                    </td>
+                    
+                    <td>{{ item.due_date  }}</td>
+                    <td>{{ item.done| yesno:"Yes,No" }}</td>
+					<td>
+						<a href="{% url 'todo:detail_view' pk=item.pk %}">
+							<button class="btn btn-info">
+								Detail
+							</button>
+						</a>
+					</td>                    
+                </tr>
+
+		        {% endfor %}
+            </tbody>
+        </table>
+
+        
+
+</div>
+{% endblock body %}
+

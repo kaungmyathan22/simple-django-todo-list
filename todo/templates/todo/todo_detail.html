@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="container">
+	
+	<div class="row ">
+		
+		<div class="col-md-6 offset-3">
+
+			<h1 class="jumbotron display-4 my-5 text-center">
+				Todo List Detail
+			</h1>
+
+			<div class="" style="margin-left: 120px;">
+
+				<div class="row">
+					
+					<p class="col-md-4">Title </p> <p>  - {{ object.title }}	</p>
+
+				</div>
+
+				<div class="row">
+					
+					<p class="col-md-4">Description </p> <p>  - {{ object.description|truncatewords:"8" }}	</p>
+
+				</div>
+
+				<div class="row">
+					
+					<p class="col-md-4">Due Date </p> <p>  - {{ object.due_date  }}	</p>
+
+				</div>
+
+				<div class="row">
+					
+					<p class="col-md-4">Done </p> <p>  - {{ object.done| yesno:"Yes,No" }}	</p>
+
+				</div>
+
+				<a href="{% url 'todo:update_view' pk=object.pk %}">
+					
+					<button class="btn btn-primary">
+						
+						Edit
+
+					</button>
+
+				</a>
+
+
+				<a href="{% url 'todo:delete_view' pk=object.pk %}">
+					
+					<button class="btn btn-danger">
+						
+						Delete
+						
+					</button>
+
+				</a>
+
+
+				<a href="{% url 'todo:index_view' %}">
+					
+					<button class="btn btn-info">
+						
+						Back
+						
+					</button>
+
+				</a>
+
+				{% if not object.done %}
+
+				<a href="{% url 'todo:done_view' pk=object.pk %}">
+					
+					<button class="btn btn-success">
+						
+						Done
+						
+					</button>
+
+				</a>
+
+				{% endif %}
+
+				</div>
+                    
+		</div>
+
+	</div>
+
+</div>
+
+                    
+
+
+{% endblock body %}
