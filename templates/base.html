@@ -9,6 +9,7 @@
 	</title>
 
 	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/flatpickr/flatpickr.min.css' %}">
 
 </head>
 <body>
@@ -19,6 +20,11 @@
 	
 	<script src="{% static 'js/JQuery/jquery.min.js' %}"> </script>
 	<script src="{% static 'js/bootstrap/bootstrap.min.js' %}"> </script>
+	<script src="{% static 'js/flatpickr/flatpickr.js' %}"> </script>
+
+	{% block javascript %}
+
+	{% endblock javascript %}
 
 </body>
 </html>
