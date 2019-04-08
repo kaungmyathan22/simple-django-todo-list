@@ -77,6 +77,8 @@ class TodoUpdateView(SuccessMessageMixin, UpdateView):
 
 class TodoAPIView(View):
 
+	http_method_names = ['get',]
+
 	def get(self, request, *args, **kwargs):
 
 		objects = Todo.objects.all().values("pk","title","description")
